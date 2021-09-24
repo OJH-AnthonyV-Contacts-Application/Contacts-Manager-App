@@ -25,21 +25,25 @@ public class Input {
         return (userInput.equals("yes") || userInput.equals("y"));
     }
 
-    public int getNumber(String userInput, int min, int max) throws NumberFormatException {
-        System.out.println(userInput);
+    public int getNumber( int min, int max) throws NumberFormatException {
+        System.out.println("Enter an option (1, 2, 3, 4 or 5)");
         int num;
-        String select = this.scan.nextLine();
         try {
-            num = Integer.parseInt(getString(userInput));
-            if(num > max || num < min) {
-                return getNumber("Input invalid, please try again", min, max);
-            }
-            return num;
+            num = Integer.parseInt(getString());
         } catch (NumberFormatException nox) {
+            System.out.println("Input invalid, please try again" + nox);
             nox.printStackTrace();
+            return getNumber(min, max);
         }
-        return getNumber("Uh Oh! Please try again", min , max);
+        if(num > max || num < min) {
+             getNumber();
+        }
+        return num;
 
+    }
+
+    public int getNumber() {
+        return getNumber(1, 5);
     }
 
     public void displayContacts() {
@@ -83,8 +87,9 @@ public class Input {
 
     public void mainPrompt() {
         Path pathToList = Paths.get("src", "contacts.txt");
-        //Input main = new Input();
+
         boolean user;
+        String userInput;
 
         do{
             System.out.println("1 - View Contacts.");
@@ -92,8 +97,9 @@ public class Input {
             System.out.println("3 - Search by contact name.");
             System.out.println("4 - Delete an existing contact.");
             System.out.println("5 - Exit.");
-            System.out.println("Enter an option (1, 2, 3, 4 or 5)");
-            String userInput = scan.next();
+           // System.out.println("Enter an option (1, 2, 3, 4 or 5)");
+
+            userInput = String.valueOf(getNumber());
             //System.out.println(main.getString(userInput));
 
 
