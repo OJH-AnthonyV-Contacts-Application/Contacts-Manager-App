@@ -99,7 +99,13 @@ public class Input {
             iox.printStackTrace();
         }
 
-        list.removeIf(contact -> contact.equals(input));
+        list.removeIf(contact -> contact.contains(input));
+
+        try {
+            Files.write(pathToList, list);
+        } catch (IOException iox){
+            iox.printStackTrace();
+        }
 
 
 
