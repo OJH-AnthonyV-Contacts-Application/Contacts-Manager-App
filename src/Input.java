@@ -1,4 +1,4 @@
-import java.io.File;
+
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.Scanner;   // import scanner
@@ -8,7 +8,7 @@ import java.util.List;
 import java.nio.file.StandardOpenOption; //append to predetermined text file
 
 public class Input {
-    private Scanner scan;
+    private final Scanner scan;
 
     public Input() {
         this.scan = new Scanner(System.in);
@@ -16,8 +16,7 @@ public class Input {
     }
 
     public String getString(){
-       String userInput = scan.next();
-        return userInput;
+        return scan.next();
     }
 
     public boolean yesNo(){
@@ -28,23 +27,41 @@ public class Input {
 
     public int getNumber( int min, int max) throws NumberFormatException {
         System.out.println("Enter an option (1, 2, 3, 4 or 5)");
-        int num;
+        int num = 0;
         try {
             num = Integer.parseInt(getString());
         } catch (NumberFormatException nox) {
-            System.out.println("Input invalid, please try again" + nox);
-            nox.printStackTrace();
-            return getNumber(min, max);
-        }
-        if(num > max || num < min) {
-             getNumber();
+            if(num > max || num < min) {
+                nox.printStackTrace();
+                return getNumber(min, max);
+            }
         }
         return num;
-
     }
 
     public int getNumber() {
         return getNumber(1, 5);
+    }
+
+    public void searchContact() {
+        Path pathToList = Paths.get("src", "contacts.txt");
+        Input search = new Input();
+        System.out.println("Please enter the contact name: ");
+        String newSearch = search.getString();
+
+        List<String> list = new ArrayList<>();
+        try{
+            list = Files.readAllLines(pathToList);
+        }catch(IOException iox) {
+            iox.printStackTrace();
+        }
+
+        for (String i : list) {
+            if (i.contains(newSearch)) {
+                System.out.println(i);
+            }
+        }
+
     }
 
     public void displayContacts() {
@@ -99,9 +116,8 @@ public class Input {
             iox.printStackTrace();
         }
 
-        list.removeIf(contact -> contact.contains(input));
-
         try {
+            list.removeIf(contact -> contact.contains(input));
             Files.write(pathToList, list);
         } catch (IOException iox){
             iox.printStackTrace();
@@ -113,7 +129,8 @@ public class Input {
 
 
     public void mainPrompt() {
-        Path pathToList = Paths.get("src", "contacts.txt");
+         //displayContacts();
+
 
         boolean user;
         String userInput;
@@ -124,29 +141,24 @@ public class Input {
             System.out.println("3 - Search by contact name.");
             System.out.println("4 - Delete an existing contact.");
             System.out.println("5 - Exit.");
-           // System.out.println("Enter an option (1, 2, 3, 4 or 5)");
 
             userInput = String.valueOf(getNumber());
-            //System.out.println(main.getString(userInput));
 
 
             switch (userInput) {
                 case "1" -> displayContacts();
                 case "2" -> addContact();
-                case "3" -> System.out.println("Stay the course!");
+                case "3" -> searchContact();
                 case "4" -> deleteContact();
-                case "5" -> {}
-                default -> System.out.println("We don't have that");
+                case "5" -> {
+                    System.out.println("Continue?");
+                }
+                default -> System.out.println("Input invalid, please try again: ");
             }
-            System.out.println("Continue?");
             user = yesNo();
 
         }while(user);
 
-
-    }
-
-    public static void main(String[] args) {
 
     }
 
