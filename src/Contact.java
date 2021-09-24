@@ -24,4 +24,10 @@ public class Contact {
     public void setNumber(String number) {
         this.number = number;
     }
+
+
+
+
+
+
 }
