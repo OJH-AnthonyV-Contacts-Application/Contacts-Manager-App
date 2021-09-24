@@ -1,6 +1,7 @@
 import java.io.File;
 import java.util.ArrayList;
-import java.util.Scanner;
+import java.util.Iterator;
+import java.util.Scanner;   // import scanner
 import java.io.IOException; //catch exceptions
 import java.nio.file.*; // import Paths, Path
 import java.util.List;
@@ -66,15 +67,15 @@ public class Input {
 
     public void addContact(){
         Path pathToList = Paths.get("src", "contacts.txt");
-        Scanner name = new Scanner(System.in);
-        Scanner number = new Scanner(System.in);
+        Input name = new Input();
+        Input number = new Input();
 
         List<String> newContact = new ArrayList<>();
         try{
             System.out.println("Enter new contact Name: ");
-            String newName = name.next();
+            String newName = name.getString();
             System.out.println("Enter number for contact: EX(000)000-000 ");
-            String newNumber = number.next();
+            String newNumber = number.getString();
             String createNum = newName + " | " + newNumber;
             newContact.add(createNum);
             Files.write(pathToList, newContact, StandardOpenOption.APPEND);
@@ -84,6 +85,26 @@ public class Input {
 
 
     }
+
+    public void deleteContact() {
+        Path pathToList = Paths.get("src", "contacts.txt");
+        Input delete = new Input();
+        System.out.println("Please enter contact you wish to remove: ");
+        String input = delete.getString();
+
+        List<String> list = new ArrayList<>();
+        try {
+            list = Files.readAllLines(pathToList);
+        } catch (IOException iox){
+            iox.printStackTrace();
+        }
+
+        list.removeIf(contact -> contact.equals(input));
+
+
+
+    }
+
 
     public void mainPrompt() {
         Path pathToList = Paths.get("src", "contacts.txt");
@@ -107,8 +128,8 @@ public class Input {
                 case "1" -> displayContacts();
                 case "2" -> addContact();
                 case "3" -> System.out.println("Stay the course!");
-                case "4" -> System.out.println("Perhaps the day will get better.");
-                case "5" -> System.out.println("What can we do to make it better?");
+                case "4" -> deleteContact();
+                case "5" -> {}
                 default -> System.out.println("We don't have that");
             }
             System.out.println("Continue?");
