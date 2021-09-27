@@ -1,6 +1,5 @@
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.Scanner;   // import scanner
 import java.io.IOException; //catch exceptions
 import java.nio.file.*; // import Paths, Path
@@ -9,6 +8,7 @@ import java.nio.file.StandardOpenOption; //append to predetermined text file
 
 public class Input {
     private final Scanner scan;
+
 
     public Input() {
         this.scan = new Scanner(System.in);
@@ -25,12 +25,12 @@ public class Input {
         return (userInput.equals("yes") || userInput.equals("y"));
     }
 
-    public int getNumber( int min, int max) throws NumberFormatException {
+    public int getNumber( int min, int max) throws IllegalArgumentException {
         System.out.println("Enter an option (1, 2, 3, 4 or 5)");
         int num = 0;
         try {
             num = Integer.parseInt(getString());
-        } catch (NumberFormatException nox) {
+        } catch (IllegalArgumentException nox) {
             if(num > max || num < min) {
                 nox.printStackTrace();
                 return getNumber(min, max);
@@ -43,26 +43,33 @@ public class Input {
         return getNumber(1, 5);
     }
 
-    public void searchContact() {
+    public void searchContact(){
         Path pathToList = Paths.get("src", "contacts.txt");
         Input search = new Input();
         System.out.println("Please enter the contact name: ");
-        String newSearch = search.getString();
 
+        String newSearch = search.getString();
         List<String> list = new ArrayList<>();
-        try{
+
+
+        try {
             list = Files.readAllLines(pathToList);
-        }catch(IOException iox) {
+        } catch(IOException iox) {
             iox.printStackTrace();
         }
 
         for (String i : list) {
-            if (i.contains(newSearch)) {
-                System.out.println(i);
-            }
+                if (i.contains(newSearch)) {
+                    System.out.println(i);
+                }
+
         }
 
+
+
     }
+
+
 
     public void displayContacts() {
         Path pathToList = Paths.get("src", "contacts.txt");
@@ -73,8 +80,8 @@ public class Input {
         } catch(IOException iox) {
             iox.printStackTrace();
         }
-        System.out.println("Name | Phone Number");
-        System.out.println("-------------------");
+        System.out.println(" |  Name | Phone Number  |");
+        System.out.println("--------------------------");
         for(String contact : list) {
             System.out.println(contact);
         }
@@ -91,13 +98,15 @@ public class Input {
         try{
             System.out.println("Enter new contact Name: ");
             String newName = name.getString();
+
             System.out.println("Enter number for contact: EX(000)000-000 ");
             String newNumber = number.getString();
-            String createNum = newName + " | " + newNumber;
+            String createNum = " | " + newName + " | " + newNumber + " | ";
             newContact.add(createNum);
             Files.write(pathToList, newContact, StandardOpenOption.APPEND);
         } catch (IOException iox) {
             iox.printStackTrace();
+
         }
 
 
@@ -130,6 +139,8 @@ public class Input {
 
     public void mainPrompt() {
          //displayContacts();
+//        Path pathToFile = Paths.get("src", "contacts.txt");
+//        pathToFile.readFileAndOutput(pathToFile);
 
 
         boolean user;
@@ -150,9 +161,7 @@ public class Input {
                 case "2" -> addContact();
                 case "3" -> searchContact();
                 case "4" -> deleteContact();
-                case "5" -> {
-                    System.out.println("Continue?");
-                }
+                case "5" -> System.exit(5);
                 default -> System.out.println("Input invalid, please try again: ");
             }
             user = yesNo();
